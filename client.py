@@ -3,8 +3,8 @@ import logging
 
 FORWARDING_RULES = [
     {"local_port": 3306, "proxy_host": "5.tcp.eu.ngrok.io", "proxy_port": 19745},
-    {"local_port": 3308, "proxy_host": "5.tcp.eu.ngrok.io", "proxy_port": 19745},
-    {"local_port": 22, "proxy_host": "5.tcp.eu.ngrok.io", "proxy_port": 19745},
+    {"local_port": 3307, "proxy_host": "5.tcp.eu.ngrok.io", "proxy_port": 19745},
+    {"local_port": 22   , "proxy_host": "5.tcp.eu.ngrok.io", "proxy_port": 19745},
     {"local_port": 80, "proxy_host": "5.tcp.eu.ngrok.io", "proxy_port": 19745},
 ]
 

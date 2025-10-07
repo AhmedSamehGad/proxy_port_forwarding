@@ -1,7 +1,7 @@
 import asyncio
 
 FORWARDING_RULES = [
-    {"prefix": b"/3308", "target_port": 3308},
+    {"prefix": b"/3306", "target_port": 3306},
     {"prefix": b"/3307", "target_port": 3307},
     {"prefix": b"/22", "target_port": 22},
     {"prefix": b"/80", "target_port": 80},
