@@ -1,9 +1,14 @@
 import asyncio
 
-PREFIX_MAP = {
-    b"/3306": 3306,
-    b"/3307": 3307
-}
+FORWARDING_RULES = [
+    {"prefix": b"/3306", "target_port": 3306},
+    {"prefix": b"/3307", "target_port": 3307},
+]
+
+LISTEN_HOST = "0.0.0.0"
+LISTEN_PORT = 8080
+
+PREFIX_MAP = {rule["prefix"]: rule["target_port"] for rule in FORWARDING_RULES}
 
 async def handle_client(reader, writer):
     addr = writer.get_extra_info("peername")
@@ -50,8 +55,8 @@ async def handle_client(reader, writer):
         await writer.wait_closed()
 
 async def main():
-    server = await asyncio.start_server(handle_client, "0.0.0.0", 8080)
-    print("🚀 Proxy server running on 0.0.0.0:8080")
+    server = await asyncio.start_server(handle_client, LISTEN_HOST, LISTEN_PORT)
+    print(f"🚀 Proxy server running on {LISTEN_HOST}:{LISTEN_PORT}")
     async with server:
         await server.serve_forever()
 
