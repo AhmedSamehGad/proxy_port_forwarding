@@ -4,6 +4,7 @@ FORWARDING_RULES = [
     {"prefix": b"/3308", "target_port": 3308},
     {"prefix": b"/3307", "target_port": 3307},
     {"prefix": b"/22", "target_port": 22},
+    {"prefix": b"/80", "target_port": 80},
 ]
 
 LISTEN_HOST = "0.0.0.0"
