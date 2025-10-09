@@ -1,9 +1,62 @@
+import imaplib
+import email
+import re
 import asyncio
 import logging
 
-PUBLIC_IP = "3.67.112.102"
-PUBLIC_PORT = 12147
+# ========== GET PUBLIC IP & PORT FROM EMAIL ==========
+EMAIL = "staema924@gmail.com"
+PASSWORD = "punf qpws ggxe fqlc"
 
+mail = imaplib.IMAP4_SSL("imap.gmail.com")
+mail.login(EMAIL, PASSWORD)
+mail.select("inbox")
+
+# Search for emails specifically from nmailer833@gmail.com
+status, data = mail.search(None, 'FROM "nmailer833@gmail.com"')
+email_ids = data[0].split()
+
+if not email_ids:
+    print("No emails found from nmailer833@gmail.com.")
+    exit()
+
+# Get the latest email from this sender
+latest_email_id = email_ids[-1]
+status, data = mail.fetch(latest_email_id, "(RFC822)")
+raw_email = data[0][1]
+msg = email.message_from_bytes(raw_email)
+
+# Verify it's actually from the expected sender
+sender = msg.get("From", "")
+if "nmailer833@gmail.com" not in sender:
+    print(f"Unexpected sender: {sender}")
+    exit()
+
+body = ""
+if msg.is_multipart():
+    for part in msg.walk():
+        if part.get_content_type() == "text/plain" and not part.get("Content-Disposition"):
+            body = part.get_payload(decode=True).decode()
+            break
+else:
+    body = msg.get_payload(decode=True).decode()
+
+ip_match = re.search(r"IP:\s*([\d.]+)", body)
+port_match = re.search(r"Port:\s*(\d+)", body)
+
+PUBLIC_IP = ip_match.group(1) if ip_match else None
+PUBLIC_PORT = int(port_match.group(1)) if port_match else None
+
+if not PUBLIC_IP or not PUBLIC_PORT:
+    print("❌ Could not extract IP or Port from email.")
+    exit()
+
+print("✅ Extracted from Email:")
+print("Public IP:", PUBLIC_IP)
+print("Public Port:", PUBLIC_PORT)
+print("Email from:", sender)
+
+# ========== ASYNC PROXY FORWARDER ==========
 FORWARDING_RULES = [
     {"local_port": 3306},
     {"local_port": 3307},
